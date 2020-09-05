@@ -12,6 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Maze Runner/task" />
+            <option value="$PROJECT_DIR$/Problems/Difference of times" />
             <option value="$PROJECT_DIR$/util" />
           </set>
         </option>
