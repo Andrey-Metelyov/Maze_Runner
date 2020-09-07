@@ -50,7 +50,7 @@ public class PrimAlgorithm {
         }
 
         while (!edges.isEmpty()) {
-            System.out.println(edges);
+//            System.out.println(edges);
             Edge edge = edges.poll();
             if (vertices.contains(edge.edge.getVertex())) {
 //                System.out.println("skip " + edge.v + ":(" + edge.edge.getVertex() + "," + edge.edge.getWeight() + ")");
@@ -65,6 +65,7 @@ public class PrimAlgorithm {
                 }
             }
             result.addEdge(edge.v, edge.edge.getVertex(), edge.edge.getWeight());
+            result.addEdge(edge.edge.getVertex(), edge.v, edge.edge.getWeight());
         }
         return result;
     }

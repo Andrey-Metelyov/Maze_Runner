@@ -8,7 +8,9 @@ public class Main {
         System.out.println("Please, enter the size of a maze");
         int height = scanner.nextInt();
         int width = scanner.nextInt();
-        MazeModel mazeModel = new MazeModel(width, height);
+//        int height = 7;
+//        int width = 9;
+        MazeModel mazeModel = new MazeModel(height, width);
         MazeView mazeView = new MazeView();
         MazeController mazeController = new MazeController(mazeModel, mazeView);
         mazeController.updateView();

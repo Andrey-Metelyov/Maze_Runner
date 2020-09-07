@@ -29,7 +29,8 @@ public class Graph {
 
         @Override
         public String toString() {
-            return "{" + vertex + ", " + weight + "}";
+//            return "{" + vertex + ", " + weight + "}";
+            return "{" + vertex + "}";
         }
     }
 
