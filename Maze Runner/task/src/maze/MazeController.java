@@ -11,7 +11,8 @@ public class MazeController {
         GENERATE,
         LOAD,
         SAVE,
-        DISPLAY
+        DISPLAY,
+        ESCAPE
     }
 
     public MazeController() {
@@ -73,10 +74,16 @@ public class MazeController {
                 case LOAD:
                     loadMaze();
                     break;
+                case ESCAPE:
+                    findEscape();
                 default:
                     System.out.println("Error");
             }
         }
+    }
+
+    private void findEscape() {
+
     }
 
     private Menu showMenu() {
@@ -105,6 +112,7 @@ public class MazeController {
                         "2. Load a maze\n" +
                         "3. Save the maze\n" +
                         "4. Display the maze\n" +
+                        "5. Find the escape\n" +
                         "0. Exit");
                 String res = scanner.nextLine();
                 switch (res) {
@@ -118,6 +126,8 @@ public class MazeController {
                         return Menu.SAVE;
                     case "4":
                         return Menu.DISPLAY;
+                    case "5":
+                        return Menu.ESCAPE;
                     default:
                         System.out.println("Incorrect option. Please try again");
                 }
