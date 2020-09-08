@@ -1,10 +1,9 @@
 package maze;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Random;
 
-public class MazeModel {
+public class MazeModel implements Serializable {
     int width;
     int height;
     private int[][] data;
@@ -16,13 +15,13 @@ public class MazeModel {
     MazeModel(int height, int width) {
         this.width = width;
         this.height = height;
-        int graphHeight;
-        if (height % 2 == 0 && (height / 2) % 2 == 1) {
-            graphHeight = height / 2 - (height / 2) % 2;
-        } else {
-            graphHeight = height / 2;
-        }
-        int graphWidth = width / 2;
+        int graphHeight = (height - 1) / 2;
+//        if (height % 2 == 0 && (height / 2) % 2 == 1) {
+//            graphHeight = height / 2 - (height / 2) % 2;
+//        } else {
+//            graphHeight = height / 2;
+//        }
+        int graphWidth = (width - 1) / 2;
 //        System.out.println("maze: " + height + "x" + width);
 //        System.out.println("graph: " + graphHeight + "x" + graphWidth);
         Graph graph = new Graph(  graphHeight * graphWidth);
@@ -36,17 +35,17 @@ public class MazeModel {
     }
 
     private void initMaze(Graph mazeGraph, int height, int width) {
-//        System.out.println("maze graph: " + height + "x" + width);
+        System.out.println("maze graph: " + height + "x" + width);
 //        System.out.println("maze graph:\n" + mazeGraph);
 //        showGraph(mazeGraph);
 //        System.out.println("height: " + height);
 //        System.out.println("width: " + width);
-        data = new int[2 * height + 2 - height % 2][2 * width + 1];
+        data = new int[2 * height + 1][2 * width + 1];
         for (int i = 0; i < 2 * width + 1; i++) {
             data[0][i] = 1;
             data[2 * height][i] = 1;
         }
-        if (height % 2 == 0) {
+        if ((2 * height + 2) < this.height) {
             // add one more wall
             for (int i = 0; i < 2 * width + 1; i++) {
                 data[2 * height + 1][i] = 1;
@@ -128,7 +127,7 @@ public class MazeModel {
                 data[i][0] = 1;
             }
         }
-        for (int i = data.length - 1; i > 0; i--) {
+        for (int i = data.length - 2; i > 0; i--) {
             if (!hasExit && data[i][data[i].length - 2] == 0) {
                 hasExit = true;
                 data[i][data[i].length - 1] = 0;
@@ -245,10 +244,10 @@ public class MazeModel {
     }
 
     public static void main(String[] args) {
-        int height = 3;
-        int width = 3;
+        int height = 17;
+        int width = 17;
         MazeModel model = new MazeModel(height, width);
-        Graph mazeGraph = new Graph(height * (width + 1));
+//        Graph mazeGraph = new Graph(height * (width + 1));
         /*
         *   0=[{4}],
             1=[{5}],
@@ -263,18 +262,18 @@ public class MazeModel {
             10=[{9}, {11}, {6}],
             11=[{10}, {7}]}
         * */
-        mazeGraph.addEdge(0, 4,1);        mazeGraph.addEdge(4, 0,1);
-        mazeGraph.addEdge(1, 5,1);        mazeGraph.addEdge(5, 1,1);
-        mazeGraph.addEdge(2, 6,1);        mazeGraph.addEdge(6, 2,1);
-        mazeGraph.addEdge(2, 3,1);        mazeGraph.addEdge(3, 2,1);
-        mazeGraph.addEdge(4, 5,1);        mazeGraph.addEdge(5, 4,1);
-        mazeGraph.addEdge(4, 8,1);        mazeGraph.addEdge(8, 4,1);
-        mazeGraph.addEdge(5, 9,1);        mazeGraph.addEdge(9, 5,1);
-        mazeGraph.addEdge(6, 10,1);       mazeGraph.addEdge(10, 6,1);
-        mazeGraph.addEdge(7, 11,1);       mazeGraph.addEdge(11, 7,1);
-        mazeGraph.addEdge(9, 10,1);       mazeGraph.addEdge(10, 9,1);
-        mazeGraph.addEdge(10, 11,1);      mazeGraph.addEdge(11, 10,1);
-        model.initMaze(mazeGraph, 3, 4);
+//        mazeGraph.addEdge(0, 4,1);        mazeGraph.addEdge(4, 0,1);
+//        mazeGraph.addEdge(1, 5,1);        mazeGraph.addEdge(5, 1,1);
+//        mazeGraph.addEdge(2, 6,1);        mazeGraph.addEdge(6, 2,1);
+//        mazeGraph.addEdge(2, 3,1);        mazeGraph.addEdge(3, 2,1);
+//        mazeGraph.addEdge(4, 5,1);        mazeGraph.addEdge(5, 4,1);
+//        mazeGraph.addEdge(4, 8,1);        mazeGraph.addEdge(8, 4,1);
+//        mazeGraph.addEdge(5, 9,1);        mazeGraph.addEdge(9, 5,1);
+//        mazeGraph.addEdge(6, 10,1);       mazeGraph.addEdge(10, 6,1);
+//        mazeGraph.addEdge(7, 11,1);       mazeGraph.addEdge(11, 7,1);
+//        mazeGraph.addEdge(9, 10,1);       mazeGraph.addEdge(10, 9,1);
+//        mazeGraph.addEdge(10, 11,1);      mazeGraph.addEdge(11, 10,1);
+//        model.initMaze(mazeGraph, 3, 4);*/
         MazeView view = new MazeView();
         view.update(model.getData());
     }
