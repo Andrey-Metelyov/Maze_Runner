@@ -1,16 +1,17 @@
 package maze;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-public class Graph {
+public class Graph implements Serializable {
     private final int vertices;
     private int edges;
     private final Map<Integer, List<Edge>> adjacency;
 
-    static class Edge {
+    static class Edge implements Serializable {
         private final int vertex;
         private final double weight;
 
@@ -47,6 +48,12 @@ public class Graph {
         return adjacency.getOrDefault(vertex, new ArrayList<>());
     }
 
+    public int[] neighbors(int vertex) {
+        IntStream nei = adjacency.get(vertex).stream().mapToInt(Edge::getVertex);
+        return nei.toArray();
+
+    }
+
     public boolean isAdjacent(int v, int w) {
         List<Edge> adj = edges(v);
         for (Edge edge : adj) {
@@ -55,6 +62,11 @@ public class Graph {
             }
         }
         return false;
+    }
+
+    public void addBothWayEdges(int v, int w, double weight) {
+        addEdge(v, w, weight);
+        addEdge(w, v, weight);
     }
 
     public void addEdge(int v, int w, double weight) {

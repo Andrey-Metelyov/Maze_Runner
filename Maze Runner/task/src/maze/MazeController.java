@@ -42,6 +42,7 @@ public class MazeController {
             SerializationUtils.serialize(mazeModel, filename);
         } catch (Exception e) {
             System.out.println("Error saving maze to file " + filename);
+            e.printStackTrace();
         }
     }
 
@@ -53,7 +54,7 @@ public class MazeController {
     }
 
     public void updateView() {
-        mazeView.update(mazeModel.getData());
+        mazeView.update(mazeModel.getData(), false);
     }
 
     public void run() {
@@ -76,6 +77,7 @@ public class MazeController {
                     break;
                 case ESCAPE:
                     findEscape();
+                    break;
                 default:
                     System.out.println("Error");
             }
@@ -83,7 +85,7 @@ public class MazeController {
     }
 
     private void findEscape() {
-
+        mazeView.update(mazeModel.getData(), true);
     }
 
     private Menu showMenu() {

@@ -1,12 +1,14 @@
 package maze;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Random;
 
 public class MazeModel implements Serializable {
     int width;
     int height;
     private int[][] data;
+    private Graph mazeGraph;
 
     MazeModel() {
         getPredefined();
@@ -27,19 +29,22 @@ public class MazeModel implements Serializable {
         Graph graph = new Graph(  graphHeight * graphWidth);
         initGraph(graph, graphHeight, graphWidth);
         PrimAlgorithm pa = new PrimAlgorithm(graph);
-        Graph mazeGraph = pa.mst();
-        initMaze(mazeGraph, graphHeight, graphWidth);
+        mazeGraph = pa.mst();
+        initMaze(graphHeight, graphWidth);
 //        Random random = new Random();
 //        generateWalls(random);
 //        generateInner(random);
     }
 
-    private void initMaze(Graph mazeGraph, int height, int width) {
-        System.out.println("maze graph: " + height + "x" + width);
+    private void initMaze(int height, int width) {
+//        System.out.println("maze graph: " + height + "x" + width);
 //        System.out.println("maze graph:\n" + mazeGraph);
 //        showGraph(mazeGraph);
 //        System.out.println("height: " + height);
 //        System.out.println("width: " + width);
+        DijkstraAlgorithm da = new DijkstraAlgorithm(mazeGraph);
+        List<Integer> path = da.getShortestPath(0, height * width - 1);
+//        System.out.println(path);
         data = new int[2 * height + 1][2 * width + 1];
         for (int i = 0; i < 2 * width + 1; i++) {
             data[0][i] = 1;
@@ -57,19 +62,28 @@ public class MazeModel implements Serializable {
                 int row = 2 * i + 1;
                 int column = 2 * j + 1;
                 int current = width * i + j;
+                boolean isPath = path.contains(current);
 
-                data[row][column] = 0;
+                data[row][column] = isPath ? 2 : 0;
                 data[row + 1][column + 1] = 1;
 
                 // to the right?
                 if (mazeGraph.isAdjacent(current, current + 1)) {
-                    data[row][column + 1] = 0;
+                    if (isPath && path.contains(current + 1)) {
+                        data[row][column + 1] = 2;
+                    } else {
+                        data[row][column + 1] = 0;
+                    }
                 } else {
                     data[row][column + 1] = 1;
                 }
                 // to down
                 if (mazeGraph.isAdjacent(current, current + width)) {
-                    data[row + 1][column] = 0;
+                    if (isPath && path.contains(current + width)) {
+                        data[row + 1][column] = 2;
+                    } else {
+                        data[row + 1][column] = 0;
+                    }
                 } else {
                     data[row + 1][column] = 1;
                 }
@@ -84,10 +98,15 @@ public class MazeModel implements Serializable {
             int row = 2 * height - 1;
             int column = 2 * i + 1;
             int current = width * (height - 1) + i;
+            boolean isPath = path.contains(current);
 
-            data[row][column] = 0;
+            data[row][column] = isPath ? 2 : 0;
             if (mazeGraph.isAdjacent(current, current + 1)) {
-                data[row][column + 1] = 0;
+                if (isPath && path.contains(current + 1)) {
+                    data[row][column + 1] = 2;
+                } else {
+                    data[row][column + 1] = 0;
+                }
             } else {
                 data[row][column + 1] = 1;
             }
@@ -101,14 +120,20 @@ public class MazeModel implements Serializable {
             int row = 2 * i + 1;
             int column = 2 * width - 1;
             int current = width * (i + 1) - 1;
+            boolean isPath = path.contains(current);
 
-            data[row][column] = 0;
+            data[row][column] = isPath ? 2 : 0;
             if (mazeGraph.isAdjacent(current, current + width)) {
-                data[row + 1][column] = 0;
+                if (isPath && path.contains(current + width)) {
+                    data[row + 1][column] = 2;
+                } else {
+                    data[row + 1][column] = 0;
+                }
             } else {
                 data[row + 1][column] = 1;
             }
         }
+        data[height * 2 - 1][width * 2 - 1] = 2;
 //        for (int[] datum : data) {
 //            System.out.println(Arrays.toString(datum));
 //        }
@@ -120,17 +145,17 @@ public class MazeModel implements Serializable {
         boolean hasEntrance = false;
         boolean hasExit = false;
         for (int i = 1; i < data.length - 1; i++) {
-            if (!hasEntrance && data[i][1] == 0) {
+            if (!hasEntrance && data[i][1] == 2) {
                 hasEntrance = true;
-                data[i][0] = 0;
+                data[i][0] = 2;
             } else {
                 data[i][0] = 1;
             }
         }
         for (int i = data.length - 2; i > 0; i--) {
-            if (!hasExit && data[i][data[i].length - 2] == 0) {
+            if (!hasExit && data[i][data[i].length - 2] == 2) {
                 hasExit = true;
-                data[i][data[i].length - 1] = 0;
+                data[i][data[i].length - 1] = 2;
             } else {
                 data[i][data[i].length - 1] = 1;
             }
@@ -275,6 +300,6 @@ public class MazeModel implements Serializable {
 //        mazeGraph.addEdge(10, 11,1);      mazeGraph.addEdge(11, 10,1);
 //        model.initMaze(mazeGraph, 3, 4);*/
         MazeView view = new MazeView();
-        view.update(model.getData());
+        view.update(model.getData(), true);
     }
 }
